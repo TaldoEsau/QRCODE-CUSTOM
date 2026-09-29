@@ -107,9 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             
             if (result.success) {
-                // Show result with cache buster
-                resultContainer.innerHTML = `<img src="${result.image_url}?t=${new Date().getTime()}" alt="QR Code Gerado" class="result-image">`;
+                // Show result (Base64 data url)
+                resultContainer.innerHTML = `<img src="${result.image_url}" alt="QR Code Gerado" class="result-image">`;
                 downloadBtn.href = result.image_url;
+                downloadBtn.download = "qrcode.png";
                 actionButtons.classList.remove('hidden');
             } else {
                 alert('Erro ao gerar QR Code: ' + result.error);
