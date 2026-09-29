@@ -87,6 +87,10 @@ def run(
     brightness=1.0,
     save_name=None,
     save_dir=os.getcwd(),
+    rounded=False,
+    logo=None,
+    transparent=False,
+    fg_color="#000000",
 ):
 
     supported_chars = r"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ··,.:;+-*/\~!@#$%^&`'=<>[]()?_{}|"
@@ -98,6 +102,8 @@ def run(
         raise ValueError("Wrong version! Please choose a int-type value from 1 to 40!")
     if not isinstance(level, str) or len(level) > 1 or level not in "LMQH":
         raise ValueError("Wrong level! Please choose a str-type level from {'L','M','Q','H'}!")
+    if logo and not os.path.isfile(logo):
+        raise ValueError("Wrong logo! Make sure the logo file exists!")
     if picture:
         if (
             not isinstance(picture, str)
@@ -178,11 +184,11 @@ def run(
             if not save_name
             else os.path.join(save_dir, save_name)
         )
-        qr.resize((qr.size[0] * 3, qr.size[1] * 3)).save(qr_name)
+        qr.save(qr_name)
         return qr_name
 
     with tempfile.TemporaryDirectory() as tempdir:
-        ver, qr_name = theqrmodule.get_qrcode(version, level, words, tempdir)
+        ver, qr_name = theqrmodule.get_qrcode(version, level, words, tempdir, rounded=rounded, logo=logo, transparent=transparent, fg_color=fg_color)
 
         if picture and os.path.splitext(picture)[1].lower() == ".gif":
             im = Image.open(picture)
@@ -231,6 +237,7 @@ def run(
                 if not save_name
                 else os.path.join(save_dir, save_name)
             )
-            qr.resize((qr.size[0] * 3, qr.size[1] * 3)).save(qr_name)
+            qr.save(qr_name)
 
         return ver, level, qr_name
+

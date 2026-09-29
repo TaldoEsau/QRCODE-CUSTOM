@@ -60,6 +60,17 @@ def main(args=None):
         "-d", "--directory", default=os.getcwd(), help="The directory of output."
     )
     argparser.add_argument(
+        "-r",
+        "--rounded",
+        action="store_true",
+        help="Produce a rounded QR-Code with smooth dots and finder patterns.",
+    )
+    argparser.add_argument(
+        "-lg",
+        "--logo",
+        help="Insert a logo picture in the center of the QR-Code e.g. logo.png",
+    )
+    argparser.add_argument(
         "-V",
         "--version",
         action="version",
@@ -81,5 +92,8 @@ def main(args=None):
         args.brightness,
         args.name,
         args.directory,
+        args.rounded,
+        args.logo,
     )
     print("Succeed! \nCheck out your", str(ver) + "-" + str(ecl), "QR-code:", qr_name)
+
