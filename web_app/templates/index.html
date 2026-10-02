@@ -3,91 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de QR Code Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Exportador de Folha A4 & Gerador de QR Code</title>
+    <meta name="description" content="Gere folhas completas com duas artes de mesa para avaliações no Google com QR Code e NFC, prontas para exportar em PDF ou PNG.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="background-elements">
         <div class="glow-orb orb-1"></div>
         <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
     </div>
     
     <main class="container">
-        <header>
-            <h1>Gerador de QR Code</h1>
-            <p>Crie QR Codes modernos e personalizados em segundos.</p>
+        <!-- Cabeçalho -->
+        <header class="app-header">
+            <div class="badge-pill">
+                <span class="sparkle">✨</span> Exportador de Folhas A4 & QR Codes
+            </div>
+            <h1>Gerador de <span>Placas & QR Code</span></h1>
+            <p>Gere folhas prontas para impressão com 2 artes de mesa do Google ou crie QR codes individuais.</p>
+
+            <!-- Seletor de Abas -->
+            <div class="tabs-nav" role="tablist">
+                <button type="button" class="tab-btn active" id="tab-sheet" role="tab" aria-selected="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <span>Exportador de Folha A4 (2 Artes)</span>
+                </button>
+                <button type="button" class="tab-btn" id="tab-single" role="tab" aria-selected="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+                    <span>QR Code Avulso</span>
+                </button>
+            </div>
         </header>
 
-        <div class="app-grid">
-            <section class="form-section glass-panel">
-                <form id="qr-form">
-                    <div class="input-group">
-                        <label for="words">Link ou Texto</label>
-                        <input type="text" id="words" name="words" placeholder="https://seusite.com.br" required>
+        <!-- ABA 1: EXPORTADOR DE FOLHA (2 ARTES GOOGLE) -->
+        <div id="sheet-view" class="tab-content active">
+            <div class="sheet-grid">
+                <!-- Painel de Configuração da Folha -->
+                <section class="form-section glass-panel">
+                    <div class="section-badge-header">
+                        <h2>Configuração da Folha</h2>
+                        <span class="pill-badge">A4 Paisagem</span>
                     </div>
+                    <p class="section-subtitle">A folha contém duas artes de mesa idênticas (ou com links diferentes) com QR Code + NFC para corte e display de balcão.</p>
 
-                    <div class="input-group toggle-group">
-                        <div class="toggle-text">
-                            <label for="rounded">Cantos Arredondados</label>
-                            <span class="hint">Deixa o QR Code com um visual moderno e suave.</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="rounded" name="rounded" checked>
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-
-                    <div class="input-group toggle-group">
-                        <div class="toggle-text">
-                            <label for="transparent">Fundo Transparente</label>
-                            <span class="hint">Remove o fundo branco para aplicar em qualquer superfície.</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="transparent" name="transparent">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="fg_color">Cor do QR Code</label>
-                        <input type="color" id="fg_color" name="fg_color" value="#000000" class="styled-color">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Logo Centralizada (Opcional)</label>
-                        <span class="hint">A logo não irá cobrir partes essenciais do QR Code.</span>
-                        <div class="file-upload" id="drop-zone">
-                            <input type="file" id="logo" name="logo" accept="image/png, image/jpeg, image/gif" hidden>
-                            <div class="upload-content">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                                <span>Arraste uma imagem ou <strong>clique para escolher</strong></span>
+                    <form id="sheet-form" autocomplete="off">
+                        <!-- Alternador: Mesmo QR Code nos dois lados -->
+                        <div class="toggle-group highlight-toggle">
+                            <div class="toggle-text">
+                                <label for="same_qr">Usar o mesmo QR Code nos dois lados</label>
+                                <span class="hint">Ideal para cortar a folha A4 ao meio e obter 2 displays idênticos.</span>
                             </div>
-                            <div id="file-name" class="file-name hidden"></div>
+                            <label class="switch">
+                                <input type="checkbox" id="same_qr" name="same_qr" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <!-- Link QR Code 1 (Esquerda) -->
+                        <div class="input-group">
+                            <label for="words_left">
+                                <span id="label-words-left">Link das Avaliações (Ambas as Placas)</span>
+                                <span class="required-indicator">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                                <input type="text" id="words_left" name="words_left" placeholder="https://g.page/r/sua-empresa/review" value="https://google.com" required>
+                            </div>
+                            <span class="hint">Cole o link da sua página de avaliação do Google Meu Negócio ou site.</span>
+                        </div>
+
+                        <!-- Link QR Code 2 (Direita) - Apenas se desmarcar 'mesmo QR' -->
+                        <div class="input-group hidden" id="group-words-right">
+                            <label for="words_right">
+                                <span>Link da Placa 2 (Lado Direito)</span>
+                                <span class="required-indicator">*</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                                <input type="text" id="words_right" name="words_right" placeholder="https://instagram.com/sua-empresa">
+                            </div>
+                            <span class="hint">Você pode usar um link diferente para a segunda placa (ex: Instagram, Cardápio ou WhatsApp).</span>
+                        </div>
+
+                        <!-- Opções de Estilo do QR Code na Folha -->
+                        <div class="custom-card-options">
+                            <!-- Seletor de Logo Central -->
+                            <div class="input-group">
+                                <label>Logo no Centro do QR Code</label>
+                                <div class="logo-mode-selector">
+                                    <label class="logo-option-card active" id="opt-logo-google">
+                                        <input type="radio" name="sheet_logo_choice" value="google" checked>
+                                        <div class="logo-card-icon">
+                                            <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                                        </div>
+                                        <span class="logo-label">Google</span>
+                                    </label>
+                                    <label class="logo-option-card" id="opt-logo-custom">
+                                        <input type="radio" name="sheet_logo_choice" value="custom">
+                                        <div class="logo-card-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        </div>
+                                        <span class="logo-label">Sua Imagem</span>
+                                    </label>
+                                    <label class="logo-option-card" id="opt-logo-none">
+                                        <input type="radio" name="sheet_logo_choice" value="none">
+                                        <div class="logo-card-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                                        </div>
+                                        <span class="logo-label">Sem Logo</span>
+                                    </label>
+                                </div>
+                                <span class="hint" id="sheet-logo-hint">Logo oficial do Google com fundo transparente.</span>
+
+                                <!-- Caixa de Upload para "Sua Imagem" -->
+                                <div id="sheet-custom-logo-container" class="file-upload-card small hidden">
+                                    <input type="file" id="sheet_custom_logo" name="custom_logo" accept="image/png, image/jpeg, image/webp" hidden>
+                                    <div class="upload-content" id="sheet-upload-content">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                        <span>Arraste sua logo ou <strong>clique para escolher</strong></span>
+                                        <span class="sub-hint">PNG transparente, JPG ou WebP</span>
+                                    </div>
+                                    <div id="sheet-file-preview-wrap" class="file-preview-row hidden">
+                                        <img id="sheet-logo-thumb" class="logo-thumb-preview" src="" alt="Prévia da Logo">
+                                        <div class="file-info">
+                                            <span id="sheet-file-name" class="file-name-text"></span>
+                                            <span class="file-hint">Imagem pronta para inserção</span>
+                                        </div>
+                                        <button type="button" id="sheet-remove-logo-btn" class="btn-remove-logo" title="Remover imagem">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cantos Arredondados -->
+                            <div class="toggle-group compact">
+                                <div class="toggle-text">
+                                    <label for="sheet_rounded">Cantos Arredondados no QR Code</label>
+                                    <span class="hint">Design suave e moderno nos módulos.</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="sheet_rounded" name="rounded" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+
+                            <!-- Cor do QR Code -->
+                            <div class="input-group color-picker-group">
+                                <label for="sheet_fg_color">Cor do QR Code</label>
+                                <div class="color-picker-row">
+                                    <input type="color" id="sheet_fg_color" name="fg_color" value="#000000" class="styled-color">
+                                    <div class="color-presets">
+                                        <button type="button" class="color-preset-dot active" style="background:#000000;" data-target="sheet_fg_color" data-color="#000000" title="Preto"></button>
+                                        <button type="button" class="color-preset-dot" style="background:#1e3a8a;" data-target="sheet_fg_color" data-color="#1e3a8a" title="Azul Google"></button>
+                                        <button type="button" class="color-preset-dot" style="background:#15803d;" data-target="sheet_fg_color" data-color="#15803d" title="Verde Google"></button>
+                                        <button type="button" class="color-preset-dot" style="background:#b91c1c;" data-target="sheet_fg_color" data-color="#b91c1c" title="Vermelho Google"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="btn-generate-sheet">
+                            <span class="btn-label">✨ Gerar Folha com as 2 Artes</span>
+                            <div class="loader hidden" id="sheet-loader"></div>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Prévia e Exportação da Folha -->
+                <section class="preview-section glass-panel">
+                    <div class="preview-header">
+                        <div>
+                            <h2>Visualização da Folha</h2>
+                            <span class="sub-header-text">Dimensões reais A4: 297 x 210 mm (300 DPI)</span>
+                        </div>
+                        <span id="sheet-status-badge" class="result-status-badge">Pronto</span>
+                    </div>
+
+                    <div class="sheet-preview-container" id="sheet-preview-container">
+                        <div class="sheet-frame">
+                            <img id="sheet-preview-img" src="" alt="Folha A4 Gerada" class="sheet-img hidden">
+                            <div class="empty-state" id="sheet-empty-state">
+                                <div class="empty-icon-wrap">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                </div>
+                                <p class="empty-title">A folha gerada aparecerá aqui</p>
+                                <p class="empty-desc">Insira o link e clique em "Gerar Folha" para visualizar o documento completo.</p>
+                            </div>
+                        </div>
+
+                        <div class="loading-overlay hidden" id="sheet-loading-overlay">
+                            <div class="spinner-large"></div>
+                            <p>Renderizando folha de impressão em alta resolução...</p>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-primary" id="submit-btn">
-                        <span>Gerar QR Code</span>
-                        <div class="loader hidden"></div>
-                    </button>
-                </form>
-            </section>
+                    <!-- Botões de Download -->
+                    <div class="export-actions hidden" id="sheet-export-actions">
+                        <a href="#" id="download-sheet-pdf-btn" class="btn-action btn-pdf" download="folha_display_google_a4.pdf">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15h6"></path><path d="M12 12v6"></path></svg>
+                            <div class="btn-action-text">
+                                <span class="main-text">Baixar em PDF</span>
+                                <span class="sub-text">Vetor • Ideal para Gráfica</span>
+                            </div>
+                        </a>
 
-            <section class="result-section glass-panel">
-                <h2>Resultado</h2>
-                <div class="result-container" id="result-container">
-                    <div class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
-                        <p>Seu QR Code aparecerá aqui</p>
+                        <a href="#" id="download-sheet-png-btn" class="btn-action btn-png" download="folha_display_google_a4.png">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            <div class="btn-action-text">
+                                <span class="main-text">Baixar em PNG</span>
+                                <span class="sub-text">Alta Resolução (300 DPI)</span>
+                            </div>
+                        </a>
+
+                        <button type="button" id="print-sheet-btn" class="btn-action btn-print" title="Imprimir diretamente">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                            <div class="btn-action-text">
+                                <span class="main-text">Imprimir</span>
+                                <span class="sub-text">Diálogo de Impressão</span>
+                            </div>
+                        </button>
                     </div>
-                </div>
-                <div class="actions hidden" id="action-buttons">
-                    <a href="#" id="download-btn" class="btn-secondary" download="qrcode.png">Baixar Imagem</a>
-                </div>
-            </section>
+                </section>
+            </div>
+        </div>
+
+        <!-- ABA 2: GERADOR AVULSO DE QR CODE -->
+        <div id="single-view" class="tab-content">
+            <div class="app-grid">
+                <section class="form-section glass-panel">
+                    <form id="single-qr-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="single_words">Link ou Texto</label>
+                            <input type="text" id="single_words" name="words" placeholder="https://seusite.com.br" value="https://google.com" required>
+                        </div>
+
+                        <div class="input-group toggle-group">
+                            <div class="toggle-text">
+                                <label for="single_rounded">Cantos Arredondados</label>
+                                <span class="hint">Deixa o QR Code com um visual moderno e suave.</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="single_rounded" name="rounded" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div class="input-group toggle-group">
+                            <div class="toggle-text">
+                                <label for="single_transparent">Fundo Transparente</label>
+                                <span class="hint">Remove o fundo branco para aplicar em qualquer superfície.</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="single_transparent" name="transparent">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="single_fg_color">Cor do QR Code</label>
+                            <input type="color" id="single_fg_color" name="fg_color" value="#000000" class="styled-color">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Logo Centralizada (Opcional)</label>
+                            <span class="hint">A logo não irá cobrir partes essenciais do QR Code.</span>
+                            <div class="file-upload-card small" id="single-drop-zone">
+                                <input type="file" id="single_logo" name="logo" accept="image/png, image/jpeg, image/gif" hidden>
+                                <div class="upload-content" id="single-upload-content">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                    <span>Arraste uma imagem ou <strong>clique para escolher</strong></span>
+                                </div>
+                                <div id="single-file-name" class="file-name-text hidden"></div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="single-submit-btn">
+                            <span class="btn-label">Gerar QR Code</span>
+                            <div class="loader hidden" id="single-loader"></div>
+                        </button>
+                    </form>
+                </section>
+
+                <section class="result-section glass-panel">
+                    <h2>Resultado</h2>
+                    <div class="result-container" id="single-result-container">
+                        <div class="empty-state">
+                            <div class="empty-icon-wrap">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+                            </div>
+                            <p class="empty-title">Seu QR Code aparecerá aqui</p>
+                        </div>
+                    </div>
+                    <div class="actions hidden" id="single-action-buttons">
+                        <a href="#" id="single-download-btn" class="btn-primary" download="qrcode.png">Baixar Imagem</a>
+                    </div>
+                </section>
+            </div>
         </div>
     </main>
+
+    <div id="toast" class="toast hidden"></div>
 
     <script src="/static/script.js"></script>
 </body>

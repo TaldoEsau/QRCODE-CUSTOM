@@ -13,12 +13,30 @@ def hex_to_rgba(hex_str, alpha=255):
         hex_str = "".join([c*2 for c in hex_str])
     return tuple(int(hex_str[i:i+2], 16) for i in (0, 2, 4)) + (alpha,)
 
-def draw_qrcode(abspath, qrmatrix, rounded=False, logo=None, transparent=False, fg_color="#000000"):
+def draw_qrcode(abspath, qrmatrix, rounded=False, logo=None, transparent=False, fg_color="#000000", box_size=None):
     from PIL import ImageDraw, ImageChops
+
+    if box_size == PIXELS_PER_MODULE:
+        unit_len = PIXELS_PER_MODULE
+        x = y = 4 * unit_len
+        pic = Image.new("1", [(len(qrmatrix) + 8) * unit_len] * 2, "white")
+
+        for line in qrmatrix:
+            for module in line:
+                if module:
+                    draw_a_black_unit(pic, x, y, unit_len)
+                x += unit_len
+            x, y = 4 * unit_len, y + unit_len
+
+        saving = os.path.join(abspath, "qrcode.png")
+        pic.save(saving)
+        return saving
+
+    if box_size is None:
+        box_size = 20
 
     N = len(qrmatrix)
     quiet_zone = 4
-    box_size = 20
     img_size = (N + 2 * quiet_zone) * box_size
 
     fill_color = hex_to_rgba(fg_color, 255)
@@ -75,6 +93,21 @@ def draw_qrcode(abspath, qrmatrix, rounded=False, logo=None, transparent=False, 
     if logo and os.path.isfile(logo):
         try:
             logo_img = Image.open(logo).convert("RGBA")
+            
+            # Automatically remove solid black outer backgrounds if image has no native transparency
+            w, h = logo_img.size
+            if w > 2 and h > 2:
+                corners = [
+                    logo_img.getpixel((0, 0)),
+                    logo_img.getpixel((w - 1, 0)),
+                    logo_img.getpixel((0, h - 1)),
+                    logo_img.getpixel((w - 1, h - 1))
+                ]
+                if all(c[0] < 18 and c[1] < 18 and c[2] < 18 and c[3] == 255 for c in corners):
+                    gray = logo_img.convert("RGB").convert("L")
+                    alpha_mask = gray.point(lambda p: 255 if p > 15 else 0)
+                    logo_img.putalpha(alpha_mask)
+
             logo_target_size = int(img_size * 0.20)
             logo_img.thumbnail((logo_target_size, logo_target_size), Image.Resampling.LANCZOS)
             
@@ -98,8 +131,8 @@ def draw_qrcode(abspath, qrmatrix, rounded=False, logo=None, transparent=False, 
             logo_x = center_x - lw // 2
             logo_y = center_y - lh // 2
             pic.paste(logo_img, (logo_x, logo_y), logo_img)
-        except Exception as e:
-            print(f"Warning: Could not embed logo ({e})")
+        except Exception:
+            pass
 
     saving = os.path.join(abspath, "qrcode.png")
     # Save as RGBA to preserve transparency
@@ -111,26 +144,3 @@ def draw_a_black_unit(p, x, y, ul):
     for i in range(ul):
         for j in range(ul):
             p.putpixel((x + i, y + j), 0)
-
-    # Insert Logo
-    if logo and os.path.isfile(logo):
-        try:
-            logo_img = Image.open(logo).convert("RGBA")
-            logo_target_size = int(img_size * 0.20)
-            logo_img.thumbnail((logo_target_size, logo_target_size), Image.Resampling.LANCZOS)
-            
-            lw, lh = logo_img.size
-            center_x, center_y = final_size // 2, final_size // 2
-
-            bg_radius = max(lw, lh) // 2 + int(box_size * 0.8)
-            draw.ellipse([center_x - bg_radius, center_y - bg_radius, center_x + bg_radius, center_y + bg_radius], fill=c_bg_solid)
-
-            logo_x = center_x - lw // 2
-            logo_y = center_y - lh // 2
-            pic.paste(logo_img, (logo_x, logo_y), logo_img)
-        except Exception as e:
-            print(f"Warning: Could not embed logo ({e})")
-
-    saving = os.path.join(abspath, "qrcode.png")
-    pic.save(saving)
-    return saving

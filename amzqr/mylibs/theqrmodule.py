@@ -6,7 +6,7 @@ from amzqr.mylibs import ECC, data, draw, matrix, structure
 # ver: Version from 1 to 40
 # ecl: Error Correction Level (L,M,Q,H)
 # get a qrcode picture of 3*3 pixels per module
-def get_qrcode(ver, ecl, str, save_place, rounded=False, logo=None, transparent=False, fg_color="#000000"):
+def get_qrcode(ver, ecl, str, save_place, rounded=False, logo=None, transparent=False, fg_color="#000000", box_size=None):
     # Data Coding
     ver, data_codewords = data.encode(ver, ecl, str)
 
@@ -20,5 +20,5 @@ def get_qrcode(ver, ecl, str, save_place, rounded=False, logo=None, transparent=
     qrmatrix = matrix.get_qrmatrix(ver, ecl, final_bits)
 
     # Draw the picture and Save it, then return the real ver and the absolute name
-    return ver, draw.draw_qrcode(save_place, qrmatrix, rounded=rounded, logo=logo, transparent=transparent, fg_color=fg_color)
+    return ver, draw.draw_qrcode(save_place, qrmatrix, rounded=rounded, logo=logo, transparent=transparent, fg_color=fg_color, box_size=box_size)
 

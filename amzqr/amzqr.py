@@ -7,6 +7,7 @@ import tempfile
 from PIL import Image, ImageChops, ImageDraw
 
 from amzqr.mylibs import theqrmodule
+from amzqr.mylibs.constant import PIXELS_PER_MODULE
 
 
 def _build_combine_mask(data_w, data_h, ver):
@@ -184,11 +185,27 @@ def run(
             if not save_name
             else os.path.join(save_dir, save_name)
         )
+        qr = qr.resize((qr.size[0] * 3, qr.size[1] * 3))
+        if qr.mode in ("RGBA", "LA") and os.path.splitext(qr_name)[1].lower() in (".jpg", ".jpeg"):
+            bg_white = Image.new("RGB", qr.size, (255, 255, 255))
+            bg_white.paste(qr, mask=qr.split()[-1] if qr.mode == "RGBA" else None)
+            qr = bg_white
         qr.save(qr_name)
         return qr_name
 
     with tempfile.TemporaryDirectory() as tempdir:
-        ver, qr_name = theqrmodule.get_qrcode(version, level, words, tempdir, rounded=rounded, logo=logo, transparent=transparent, fg_color=fg_color)
+        box_size = PIXELS_PER_MODULE if picture else None
+        ver, qr_name = theqrmodule.get_qrcode(
+            version,
+            level,
+            words,
+            tempdir,
+            rounded=rounded,
+            logo=logo,
+            transparent=transparent,
+            fg_color=fg_color,
+            box_size=box_size,
+        )
 
         if picture and os.path.splitext(picture)[1].lower() == ".gif":
             im = Image.open(picture)
@@ -237,7 +254,12 @@ def run(
                 if not save_name
                 else os.path.join(save_dir, save_name)
             )
+            if qr.mode in ("RGBA", "LA") and os.path.splitext(qr_name)[1].lower() in (".jpg", ".jpeg"):
+                bg_white = Image.new("RGB", qr.size, (255, 255, 255))
+                bg_white.paste(qr, mask=qr.split()[-1] if qr.mode == "RGBA" else None)
+                qr = bg_white
             qr.save(qr_name)
 
         return ver, level, qr_name
+
 
